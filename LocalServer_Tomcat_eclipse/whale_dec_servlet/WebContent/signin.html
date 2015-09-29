@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--screen compability-->
+  <title>Sign In</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- external links of bootstrap for java script,css,ajax-->
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<!-- css styling of page-->
+
+<!--server code-->
+<script>
+signinChecked()
+
+function signinChecked(){
+	var xmlhttp; //from here it is the Ajax part
+	var a="action=singinCheck";
+	if (window.XMLHttpRequest)
+	  {// code for IE7+, Firefox, Chrome, Opera, Safari
+	  xmlhttp=new XMLHttpRequest();
+	  }
+	else
+	  {// code for IE6, IE5
+	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	xmlhttp.onreadystatechange=function() //when the ready state changes
+	  {
+	  if (xmlhttp.readyState==4 && xmlhttp.status==200) //the server send a confirm message telling the website the data is received and the result is returnned successfully
+	    {
+		  if(xmlHttp.responseText=="1"){
+				document.getElementById("signinform").innerHTML="You have signed in222!"; //get the response from server and set it to web element with id = "txtHint" 
+				//redirect();//call the function "redirect()" below
+			  }
+	    }
+	  }
+	  //this is for sending a post request and the string "a"(username=XXX&password=XXX) to the server
+	xmlhttp.open("GET","../whale_dec_servlet/Whale_dec_servlet_login?action=signinCheck",true); //send to the php server telling the sending method is "POST" and the action is "login"
+	xmlhttp.send(a);//send string "a"
+}
+
+function showHint()
+{
+	var uemail=document.getElementById("inputEmail").value;//get the content of website element with id "inputEmail" (in this example it is the input of user name)
+	var upass=document.getElementById("inputPassword").value;//get the content of website element with id "inputPassword" (in this website it gets the user input password)
+	var a="inputEmail="+uemail+"&"+"inputPassword="+upass; //assemble the user input into one single string
+	var xmlhttp; //from here it is the Ajax part
+	if (window.XMLHttpRequest)
+	  {// code for IE7+, Firefox, Chrome, Opera, Safari
+	  xmlhttp=new XMLHttpRequest();
+	  }
+	else
+	  {// code for IE6, IE5
+	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	xmlhttp.onreadystatechange=function() //when the ready state changes
+	  {
+	  if (xmlhttp.readyState==4 && xmlhttp.status==200) //the server send a confirm message telling the website the data is received and the result is returnned successfully
+	    {
+			document.getElementById("txtHint").innerHTML=xmlhttp.responseText; //get the response from server and set it to web element with id = "txtHint" 
+			//redirect();//call the function "redirect()" below
+	    }
+	  }
+	  //this is for sending a post request and the string "a"(username=XXX&password=XXX) to the server
+	xmlhttp.open("POST","../whale_dec_servlet/Whale_dec_servlet_login",true); //send to the php server telling the sending method is "POST" and the action is "login"
+	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded"); //set header
+	xmlhttp.send(a);//send string "a"
+}
+
+function logout(){
+	var xmlhttp; //from here it is the Ajax part
+	var a="action=logout";
+	if (window.XMLHttpRequest)
+	  {// code for IE7+, Firefox, Chrome, Opera, Safari
+	  xmlhttp=new XMLHttpRequest();
+	  }
+	else
+	  {// code for IE6, IE5
+	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	xmlhttp.onreadystatechange=function() //when the ready state changes
+	  {
+	  if (xmlhttp.readyState==4 && xmlhttp.status==200) //the server send a confirm message telling the website the data is received and the result is returnned successfully
+	    {
+			document.getElementById("txtHint").innerHTML=xmlhttp.responseText; //get the response from server and set it to web element with id = "txtHint" 
+			//redirect();//call the function "redirect()" below
+	    }
+	  }
+	  //this is for sending a post request and the string "a"(username=XXX&password=XXX) to the server
+	xmlhttp.open("POST","../whale_dec_servlet/Whale_dec_servlet_logout",true); //send to the php server telling the sending method is "POST" and the action is "login"
+	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded"); //set header
+	xmlhttp.send(a);//send string "a"
+}
+</script>
+
+
+
+
+
+
+
+
+<!--end of server code-->
+
+<style>
+body {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #6495ed;
+}
+
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+  position: relative;
+  height: auto;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+</style>
+</head>
+
+<!-------------------------------------------------------------><div class="container">
+
+<!----------------------------------------------------------->
+
+
+          <div class="masthead clearfix">
+            <div class="inner">
+              <h3 class="masthead-brand">Right Whale Detection</h3>
+              <nav>
+                <ul class="nav masthead-nav">
+                  <li class="active"><a href="index.html">Home</a></li>
+                  <li><a href="form.html">Register</a></li>
+                   </ul>
+              </nav>
+            </div>
+          </div>
+          <button class="btn btn-lg btn-primary" id="logout" onclick="logout()">Log out</button>
+
+
+<!--------------------------------------------------------->
+<div id="signinform">
+      <form class="form-signin">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" value="remember-me"> Remember me
+          </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="showHint()">Sign in</button>
+
+      <br/><div id="txtHint"></div></br>
+
+      </form>
+</div>
+    </div> <!-- /container -->
+
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
+
