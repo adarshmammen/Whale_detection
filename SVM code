@@ -1,0 +1,260 @@
+%%%-----------------INPUT IMAGE--------------%%%%%
+clear test;
+clear final_image;
+clear image;
+clear image__temp;
+b1=1;
+b=102;
+%filename = 'C:\Users\BOB0021\Documents\MATLAB\\w_4.jpg';
+filename = 'C:\Users\BOB0021\Desktop\working\trial_1.jpg';
+image = imread(filename);
+figure(1);
+imshow(image);
+title('INPUT IMAGE')
+
+%%------------------------------------------%%
+
+%%------------------CHECK SIZE---------------------------------------%%%%%
+[x,y]=size(image);
+
+%%%------------------- RE-SIZE WHEN LESS THAN 256--------%%%%%%
+if(x<256)
+    index = round(256/x);
+    index = index + 1;
+    image1 =imresize(image,index);
+    image=image1;
+    figure(2);
+    imshow(image1);
+    title('expanded width')
+end
+    if(y<256)
+        index_1 = round(256/y);
+        index_1 = index_1+1;
+        image_1 = imresize(image,index_1);
+        image=image_1;
+        figure(3);
+        imshow(image_1);
+        title('expanded height');
+    end
+    %%%-----------------------------------%%%%%%%%%%%%
+    
+    
+    Ir=image;
+image1=image;
+%%%%%%%%------copying expanded images------%%%%%
+%filename_new=strcat('C:\Users\BOB0021\Desktop\expanded\no_',num2str(b1),'.jpg');
+ %           imwrite(image,filename_new,'jpeg');
+%-----------------------------------%%%%%%%%
+
+
+%%% ------CONVERT TO GRAYSCALE------------%%%%
+image = rgb2gray(image); 
+image_temp = image;
+[x,y] = size(image);
+% figure(22);
+% imshow(image_temp);
+%%%%%%-----------------%%%%%%%%%%%%%%
+
+%%%INTIALIZE THE VARIABLES-------%%%%
+i = 0;
+j = 0;
+I = zeros(256,256);
+I1 = zeros(256,256,3);
+%final_image = zeros(500,500);
+test = [];
+q = 1;
+t =1;
+
+bb=0;
+bbb=0;
+s=0;
+predict=0;
+x_array = 0;
+y_array = 0;
+%------------------------------------%%%%%
+
+%%%% STEP ONE OF PREDICTION ON ORIGINAL IMAGE----------%%%
+
+for l = 0:50:x -256
+
+for k= 0:50:y - 256
+ xcord = l;
+    ycord = k;
+for i = 1:256
+    for j = 1:256
+       I(i,j) = image(i+l,j+k);
+      I1(i,j,:) = Ir(i+l,j+k,:);
+    
+     
+    
+    end  
+end
+        %I1=I;
+        if(size(I,1)==256 && size(I,2)==256)
+        I = extractHOGFeatures(I,'CellSize',[8 8]);
+        I = reshape(I,1,34596);
+        end
+        PREDICTION=svmclassify(svmstruct,double(I)); 
+        
+        test(t,q) = PREDICTION(1,1);
+        q = q+1;
+        
+        if (PREDICTION == 1)
+            predict = predict+1; 
+            x_array(s+1) = xcord;
+            y_array(s+1) = ycord;
+             s=s+1;
+           %figure;
+            b=b+1;
+            %imshow(I1);
+            filename_new=strcat('C:\Users\BOB0021\Desktop\segpic\yeye',num2str(b),'.jpg');
+            imwrite(I1,filename_new,'jpeg');
+        end
+        clear I;
+        clear I1;
+           
+end
+        q = 1;
+        t = t+1;
+end
+
+%%%%%%%%----END OF STEP 1-----------%%%%%%%%%
+
+%%%%%%------Step 2 of training downsampling image-----%%%%%%
+if (predict==0)
+    
+%image_int = imresize(image,1.8);
+image_down = impyramid(image,'reduce');
+[x_d,y_d] =size(image_down)
+%resizing image
+if(x_d<256)
+    difference = 256-x_d;
+    for i=x_d+1:x_d+difference
+        for j=1:y_d
+            image_down(i,j) = 0;
+        end
+    end
+end 
+% resizing
+if(y_d<256)
+    difference1 = 256-y_d;
+    for i=1:x_d
+        for j=y_d+1:y_d+difference1
+            image_down(i,j) = 0;
+         end
+    end
+end
+[x_d,y_d]=size(image_down)
+for l = 0:50:x_d -256
+
+for k= 0:50:y_d - 256
+ xcord = l;
+    ycord = k;
+for i = 1:256
+    for j = 1:256
+       I(i,j) = image_down(i+l,j+k);
+       
+    
+    end  
+end
+       
+        if(size(I,1)==256 && size(I,2)==256)
+        I = extractHOGFeatures(I,'CellSize',[8 8]);
+        I = reshape(I,1,34596);
+        end
+        PREDICTION=svmclassify(svmstruct,double(I)); 
+        
+        test(t,q) = PREDICTION(1,1);
+        q = q+1;
+        
+        if (PREDICTION == 1)
+            predict = predict+1; 
+            x_array(s+1) = xcord
+            y_array(s+1) = ycord;
+             s=s+1;
+%            figure;
+            b=b+1;
+%             imshow(I);
+            filename_new=strcat('C:\Users\BOB0021\Desktop\segpic\yeye',num2str(b),'.jpg');
+            imwrite(I,filename_new,'jpeg');
+        end
+        clear I;
+        clear I1;
+           
+end
+        q = 1;
+        t = t+1;
+end
+
+end
+%%%%%--------end of second code---------------%%%%%%%%%
+
+
+
+
+
+
+%%%%---------- DISPLAY MAIN WINDOW------%%%%%
+  xlen = length(x_array);
+ ylen = length(y_array);
+ i1=1;
+ for i = 1:xlen-1
+      c =abs((x_array(i)-x_array(i+1))^2) + abs((y_array(i)-y_array(i+1))^2);
+         c1=sqrt(c);
+         if c1<=256;
+             x_f(i1)=x_array(i);
+              y_f(i1) = y_array(i);
+              i1=i1+1;
+         end
+ end
+ 
+ if(predict>0)
+ xcf = min(x_array)
+ ycf = min(y_array)
+x_c = max(x_array)+256;
+ y_c = max(y_array)+256;
+ x_cc = max(x_c,(xcf+500));
+ y_cc = max(y_c,(ycf+500));
+ 
+ xcf=xcf+1;
+ycf=ycf+1;
+[x_s,y_s]=size(image_temp)
+ 
+if x_cc<x_s
+    xcfm=x_cc;
+else
+    xcfm = x_s;
+end
+if y_cc+500<y_s
+    ycfm = y_cc;
+else
+    ycfm = y_s;
+end
+for i = xcf:xcfm
+      for j = ycf:ycfm
+          
+          final_image(i-xcf+1,j-ycf+1) = image_temp(i,j);
+       end
+   end
+  %rect=[xcf+1,ycf+1,256,256];
+  X_2 =imcrop(image_temp,[xcf,ycf,xcfm,ycfm]);
+  figure(10);
+  imshow(final_image);
+  title('final window')
+%   figure(11)
+%   imshow(X_2);
+ end
+
+
+%%%%%%%%----------------------------%%%%%%%%%
+
+%%%----------- DISPLAY RESULT-------------%%%%%%
+whale = sum(test(:));
+
+if(whale > 0.9)
+ h = msgbox('Whale detected');
+ else
+     h = msgbox('Whale missing');
+end
+ 
+%---------------------------------------%%%%%
