@@ -1,0 +1,5 @@
+There are two files for SVM training 1.)hog_train.m 2.)SVM.m
+These files are codes to be run in mATLAB. The hog_train.m is for training of SVM and the SVM.m file is for testing of input image.
+First if you must run the hog_train.m file with the positive and negative images in the pos and neg named folders so as to train the SVM.
+WE have also provided a already variable file and image so that you can i port that variable in mATLAB and run SVM.m on the image to check result.
+SVM.m file is for testing of input image and it will display the right whale head.
